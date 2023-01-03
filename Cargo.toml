@@ -1,6 +1,6 @@
 [package]
 name = "pest_duckyscript"
-version = "6.0.0"
+version = "8.0.0"
 description = "Hak5 DuckyScript and MallardScript language grammers - used for parsing/compilation."
 license-file = "LICENSE"
 documentation = "https://github.com/Nate-Wilkins/pest_duckyscript"
@@ -14,3 +14,5 @@ pest = "2.5.2"
 pest_derive = "2.5.2"
 
 [dev-dependencies]
+predicates = "1"
+pretty_assertions = "1.3.0"

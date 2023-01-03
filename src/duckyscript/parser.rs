@@ -10,18 +10,15 @@ use duckyscript::grammar;
 /// Parse provided DuckyScript input into it's AST equivalent.
 pub fn parse_document(input: String) -> Result<Vec<ast::Statement>> {
     let pairs = grammar::ParserDuckyScript::parse(grammar::Rule::document, &input)
-        .unwrap()
+        .with_context(|| "Unable to parse provided document.")?
         .next()
         .unwrap()
         .into_inner();
 
     let mut statements: Vec<ast::Statement> = Vec::new();
     for pair in pairs {
-        statements.push(
-            parse_statement(pair)
-                .context("Unable to parse statement.")
-                .unwrap(),
-        );
+        statements
+            .push(parse_statement(pair).with_context(|| "Unable to parse provided statement.")?);
     }
 
     return Ok(statements);

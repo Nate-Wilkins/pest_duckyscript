@@ -118,35 +118,37 @@ keyword_command = {
   // Delays.
   | "DELAY"
   // Keystroke Injection.
-  | "STRING"
   | "STRINGLN"
+  | "STRING"
     // Cursor Keys.
-    | "UP"
-    | "DOWN"
-    | "LEFT"
-    | "RIGHT"
-    | "UPARROW"
-    | "DOWNARROW"
-    | "LEFTARROW"
-    | "RIGHTARROW"
-    | "PAGEUP"
-    | "PAGEDOWN"
-    | "HOME"
-    | "END"
-    | "INSERT"
+    | "BACKSPACE"
     | "DELETE"
     | "DEL"
-    | "BACKSPACE"
-    | "TAB"
+    | "DOWNARROW"
+    | "DOWN"
+    | "END"
+    | "HOME"
+    | "INSERT"
+    | "LEFTARROW"
+    | "LEFT"
+    | "PAGEDOWN"
+    | "PAGEUP"
+    | "RIGHTARROW"
+    | "RIGHT"
     | "SPACE"
+    | "TAB"
+    | "UPARROW"
+    | "UP"
     // System Keys.
+    | "APP"
+    | "BREAK"
     | "ENTER"
     | "ESCAPE"
-    | "PAUSE"
-    | "BREAK"
-    | "PRINTSCREEN"
-    | "MENU"
-    | "APP"
+    | "F0"
+    // TODO: Does 10 work? Are the docs missing it? https://docs.hak5.org/hak5-usb-rubber-ducky/duckyscript-tm-quick-reference#system-keys
+    | "F10"
+    | "F11"
+    | "F12"
     | "F1"
     | "F2"
     | "F3"
@@ -156,17 +158,17 @@ keyword_command = {
     | "F7"
     | "F8"
     | "F9"
-    | "F0"
-    | "F11"
-    | "F12"
+    | "MENU"
+    | "PAUSE"
+    | "PRINTSCREEN"
     // Basic Modifier Keys.
-    | "SHIFT"
     | "ALT"
+    | "COMMAND"
     | "CONTROL"
     | "CTRL"
-    | "COMMAND"
-    | "WINDOWS"
     | "GUI"
+    | "SHIFT"
+    | "WINDOWS"
     // Advanced Modifier Keys.
     | "OPTION"
     // Standalone Modifier Keys.
@@ -185,13 +187,11 @@ keyword_command = {
   | "LED_R"
   | "LED_G"
   // Attack Mode.
-  | "ATTACKMODE"
   | "SAVE_ATTACKMODE"
   | "RESTORE_ATTACKMODE"
+  | "ATTACKMODE"
   // Constants.
   | "DEFINE"
-  // Variables.
-  | "VAR"
   // Randomization.
   | "RANDOM_LOWERCASE_LETTER"    // abcdefghijklmnopqrstuvwxyz
   | "RANDOM_UPPERCASE_LETTER"    // ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -238,7 +238,9 @@ value_command = {
 
 
 statement_variable = {
-    "$"
+    "VAR"
+  ~ " "*
+  ~ "$"
   ~ keyword_variable
   ~ " "*
   ~ "="
