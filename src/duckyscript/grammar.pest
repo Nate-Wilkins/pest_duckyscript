@@ -1,0 +1,257 @@
+// // // // // // // // //
+//
+// DuckyScript
+//
+// Documentation: https://docs.hak5.org/hak5-usb-rubber-ducky/duckyscript-tm-quick-reference
+//
+// // // // // // // // //
+
+// TODO: Operators, comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
+
+// Operators.
+// '='  : Assignment
+// '+'  : Add
+// '-'  : Subtract
+// '*'  : Multiply
+// '/'  : Divide
+// '%'  : Modulus
+// '^'  : Exponent
+
+// Comparisons.
+// '==' : Equal to
+// '!=' : Not equal to
+// '>'  : Greater than
+// '<'  : Less than
+// '>=' : Greater than or equal to
+// '<=' : Less than or equal to
+
+// Logical Operators.
+// '&&' : Logical AND. If both the operands are non-zero, the condition is TRUE.
+// '||' : Logical OR. If any of the two operands is non-zero, the condition is TRUE.
+
+// Bitwise Operators.
+// '&'  : Bitwise AND. If the corresponding bits of the two operands is 1, will result in 1. Otherwise if either bit of an operand is 0, the result of the corresponding bit is evaluated as 0.
+// '|'  : Bitwise OR. If at least one corresponding bit of the two operands is 1, will result in 1.
+// '>>' : Right Shift. Accepts two numbers. Right shifts the bits of the first operand. The second operand determines the number of places to shift.
+// '<<' : Left Shift. Accepts two numbers. Left shifts the bits of the first operand. The second operand decides the number of places to shift.
+
+// Conditional Statements.
+// 'IF'
+// 'ELSE'
+
+// Loops.
+// 'WHILE'
+
+// Functions.
+// 'FUNCTION'
+// 'RETURN'
+
+// Random Integers.
+// '$_RANDOM_MIN'            : minimum random integer.
+// '$_RANDOM_MAX'            : maximum random integer.
+// '$_RANDOM_INT'            : random integer between '$_RANDOM_MIN' and '$_RANDOM_MAX'.
+
+// Jitter.
+// '$_JITTER_ENABLED'        : Set TRUE to start and FALSE to stop jitter.
+// '$_JITTER_MAX'            : Integer (0-65535) of maximum time in milliseconds between keystrokes. Default 20.
+
+// Variables Internal
+// BUTTON
+// '$_BUTTON_ENABLED'        : Returns TRUE if the button is enabled or FALSE if the button is disabled.
+// '$_BUTTON_USER_DEFINED'   : Returns TRUE if a BUTTON_DEF has been implemented in the payload or FALSE if it hasn't been implemented.
+// '$_BUTTON_PUSH_RECEIVED'  : Returns TRUE if the button has ever been pressed. May be retrieved or set.
+// '$_BUTTON_TIMEOUT'        : The button debounce, or cooldown time before counting the next button press, in milliseconds. The default value is 1000.
+// LED
+// '$_SYSTEM_LEDS_ENABLED'   : Default set TRUE. May be retrieved or set. Boot and ATTACKMODE change LED.
+// '$_STORAGE_LEDS_ENABLED'  : Default set TRUE. May be retrieved or set. Blinks the LED red/green on storage read/write in ATTACKMODE STORAGE.
+// '$_LED_CONTINUOUS_SHOW_STORAGE_ACTIVITY' : Default set TRUE. May be retrieved or set. The LED will light solid green when the storage has been inactive for longer than $_STORAGE_ACTIVITY_TIMEOUT (default 1000 ms). Otherwise, the LED will light red when active.
+// '$_INJECTING_LEDS_ENABLED' : Default set TRUE. May be retrieved or set. The LED will blink green on payload execution.
+// '$_EXFIL_LEDS_ENABLED'    : Default set TRUE. May be retrieved or set. The LED will blink green during Keystroke Reflection.
+// '$_LED_SHOW_CAPS'         : Toggles TRUE or FALSE based on whether the caps lock LED is set on or off by the host. May only be retrieved. Cannot be set.
+// '$_LED_SHOW_NUM'          : Toggles TRUE or FALSE based on whether the num lock LED is set on or off by the host. May only be retrieved. Cannot be set.
+// '$_LED_SHOW_SCROLL'       : Toggles TRUE or FALSE based on whether the num lock LED is set on or off by the host. May only be retrieved. Cannot be set.
+// ATTACKMODE
+// '$_CURRENT_VID'           : Returns the currently operating Vendor ID with endian swapped. May only be retrieved. Cannot be set.
+// '$_CURRENT_PID'           : Returns the currently operating Product ID with endian swapped. May only be retrieved. Cannot be set.
+// '$_CURRENT_ATTACKMODE'    : Returns the currently operating ATTACKMODE represented as 0 for OFF, 1 for HID, 2 for STORAGE and 3 for both HID and STORAGE
+// RANDOM
+// '$_RANDOM_INT'            : Random integer within set range.
+// '$_RANDOM_MIN'            : Random integer minimum range (unsigned, 0-65535)
+// '$_RANDOM_MAX'            : Random integer maximum range (unsigned, 0-65535)
+// '$_RANDOM_SEED'           : Random seed from seed.bin
+// JITTER
+// '$_JITTER_ENABLED'        : Set TRUE to enable jitter. Default FALSE.
+// '$_JITTER_MAX'            : Sets the maximum time between key presses in milliseconds. The default maximum is 20 ms.
+// LOCK KEYS
+// '$_CAPSLOCK_ON'           : TRUE if on, FALSE if off.
+// '$_NUMLOCK_ON'            : TRUE if on, FALSE if off.
+// '$_SCROLLLOCK_ON'         : TRUE if on, FALSE if off.
+// '$_SAVED_CAPSLOCK_ON'     : On USB attach, sets TRUE or FALSE depending on the reported OS condition.
+// '$_SAVED_NUMLOCK_ON'      : On USB attach, sets TRUE or FALSE depending on the reported OS condition.
+// '$_SAVED_SCROLLLOCK_ON'   : On USB attach, sets TRUE or FALSE depending on the reported OS condition.
+// '$_RECEIVED_HOST_LOCK_LED_REPLY' : On receipt of any lock state LED control code, sets TRUE. This flag is helpful for fingerprinting certain operating systems (e.g. macOS) or systems which do not communicate lock keys "correctly".
+// STORAGE
+// '$_STORAGE_ACTIVITY_TIMEOUT' : As payload is running, this value decrements if storage activity is not detected. Default value is 1000.
+// EXFILTRATION
+// '$_EXFIL_MODE_ENABLED'    : Set TRUE to enable Keystroke Reflection. Will listen for caps and num lock changes, writing binary values to loot.bin. Default FALSE. num=1, caps=0.
+// OS_DETECT
+// '$_HOST_CONFIGURATION_REQUEST_COUNT' : Used by OS_DETECT extension to detect device enumeration count.
+// '$_OS'                    : Used by OS_DETECT extension to return value of fingerprinted operating system. May return WINDOWS, MACOS, LINUX, CHROMEOS, ANDROID, IOS. These names are reserved and should not be used in user variables.
+
+document = {
+    SOI
+  ~ " "* ~ NEWLINE* ~ (statement_command | statement_variable)*
+  ~ EOI
+}
+
+statement_command = {
+    keyword_command
+  ~ " "*
+  ~ value_command
+  ~ " "*
+  ~ NEWLINE*
+}
+
+keyword_command = {
+  // Comments.
+    "REM"
+  // Keystroke Injection.
+  | "STRING"
+  | "STRINGLN"
+    // Cursor Keys.
+    | "UP"
+    | "DOWN"
+    | "LEFT"
+    | "RIGHT"
+    | "UPARROW"
+    | "DOWNARROW"
+    | "LEFTARROW"
+    | "RIGHTARROW"
+    | "PAGEUP"
+    | "PAGEDOWN"
+    | "HOME"
+    | "END"
+    | "INSERT"
+    | "DELETE"
+    | "DEL"
+    | "BACKSPACE"
+    | "TAB"
+    | "SPACE"
+    // System Keys.
+    | "ENTER"
+    | "ESCAPE"
+    | "PAUSE"
+    | "BREAK"
+    | "PRINTSCREEN"
+    | "MENU"
+    | "APP"
+    | "F1"
+    | "F2"
+    | "F3"
+    | "F4"
+    | "F5"
+    | "F6"
+    | "F7"
+    | "F8"
+    | "F9"
+    | "F0"
+    | "F11"
+    | "F12"
+    // Basic Modifier Keys.
+    | "SHIFT"
+    | "ALT"
+    | "CONTROL"
+    | "CTRL"
+    | "COMMAND"
+    | "WINDOWS"
+    | "GUI"
+    // Advanced Modifier Keys.
+    | "OPTION"
+    // Standalone Modifier Keys.
+    | "INJECT_MOD"
+    // Lock Keys.
+    | "CAPSLOCK"
+    | "NUMLOCK"
+    | "SCROLLOCK"
+  // Delays.
+  | "DELAY"
+  // Button.
+  | "WAIT_FOR_BUTTON_PRESS"
+  | "BUTTON_DEF"
+  | "DISABLE_BUTTON"
+  | "ENABLE_BUTTON"
+  // LED.
+  | "LED_OFF"
+  | "LED_R"
+  | "LED_G"
+  // Attack Mode.
+  | "ATTACKMODE"
+  | "SAVE_ATTACKMODE"
+  | "RESTORE_ATTACKMODE"
+  // Constants.
+  | "DEFINE"
+  // Variables.
+  | "VAR"
+  // Randomization.
+  | "RANDOM_LOWERCASE_LETTER"    // abcdefghijklmnopqrstuvwxyz
+  | "RANDOM_UPPERCASE_LETTER"    // ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  | "RANDOM_LETTER"              // abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+  | "RANDOM_NUMBER"              // 0123456789
+  | "RANDOM_SPECIAL"             // !@#$%^&*()
+  | "RANDOM_CHAR"                // abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()
+  // ATTACKMODE.
+  | "VID_RANDOM"                 // Random Vendor ID
+  | "PID_RANDOM"                 // Random Product ID
+  | "MAN_RANDOM"                 //  Random 32 alphanumeric character iManufacturer
+  | "PROD_RANDOM"                // Random 32 alphanumeric character iProduct
+  | "SERIAL_RANDOM"              // Random 12 digit serial number
+  // Holding Keys.
+  | "HOLD"
+  | "RELEASE"
+  // Payload Control.
+  | "RESTART_PAYLOAD"
+  | "STOP_PAYLOAD"
+  | "RESET"
+  // Payload Hiding.
+  | "HIDE_PAYLOAD"               // Hides the inject.bin and seed.bin files from the MicroSD card.
+  | "RESTORE_PAYLOAD"            // Restores the inject.bin and seed.bin files to the MicroSD card.
+  // Lock Keys.
+  | "WAIT_FOR_CAPS_ON"           // Pause until caps lock is turned on
+  | "WAIT_FOR_CAPS_OFF"          // Pause until caps lock is turned off
+  | "WAIT_FOR_CAPS_CHANGE"       // Pause until caps lock is toggled on or off
+  | "WAIT_FOR_NUM_ON"            // Pause until num lock is turned on
+  | "WAIT_FOR_NUM_OFF"           // Pause until num lock is turned off
+  | "WAIT_FOR_NUM_CHANGE"        // Pause until num lock is toggled on or off
+  | "WAIT_FOR_SCROLL_ON"         // Pause until scroll lock is turned on
+  | "WAIT_FOR_SCROLL_OFF"        // Pause until scroll lock is turned off
+  | "WAIT_FOR_SCROLL_CHANGE"     // Pause until scroll lock is toggled on or off
+  // 'SAVE' & 'RESTORE' Commands.
+  | "SAVE_HOST_KEYBOARD_LOCK_STATE"
+  | "RESTORE_HOST_KEYBOARD_LOCK_STATE"
+  // Exfiltration.
+  | "EXFIL"
+}
+
+value_command = {
+  (!NEWLINE ~ ANY)*
+}
+
+
+statement_variable = {
+    "$"
+  ~ keyword_variable
+  ~ " "*
+  ~ "="
+  ~ " "*
+  ~ value_variable
+  ~ " "*
+  ~ NEWLINE*
+}
+
+keyword_variable = {
+  !ASCII_DIGIT ~ (!" " ~ !"=" ~ ANY)+
+}
+
+value_variable = {
+  (!NEWLINE ~ ANY)*
+}

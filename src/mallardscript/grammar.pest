@@ -1,0 +1,171 @@
+// // // // // // // // //
+//
+// MallardScript
+//
+// Based on DuckyScript with the following modifications:
+// - statement_command: Additional "IMPORT" command.
+//
+// // // // // // // // //
+
+// TODO: Operators, comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
+
+document = {
+    SOI
+  ~ " "* ~ NEWLINE* ~ (statement_command | statement_variable)*
+  ~ EOI
+}
+
+statement_command = {
+    keyword_command
+  ~ " "*
+  ~ value_command
+  ~ " "*
+  ~ NEWLINE*
+}
+
+keyword_command = {
+  // Comments.
+    "REM"
+  // Keystroke Injection.
+  | "STRING"
+  | "STRINGLN"
+    // Cursor Keys.
+    | "UP"
+    | "DOWN"
+    | "LEFT"
+    | "RIGHT"
+    | "UPARROW"
+    | "DOWNARROW"
+    | "LEFTARROW"
+    | "RIGHTARROW"
+    | "PAGEUP"
+    | "PAGEDOWN"
+    | "HOME"
+    | "END"
+    | "INSERT"
+    | "DELETE"
+    | "DEL"
+    | "BACKSPACE"
+    | "TAB"
+    | "SPACE"
+    // System Keys.
+    | "ENTER"
+    | "ESCAPE"
+    | "PAUSE"
+    | "BREAK"
+    | "PRINTSCREEN"
+    | "MENU"
+    | "APP"
+    | "F1"
+    | "F2"
+    | "F3"
+    | "F4"
+    | "F5"
+    | "F6"
+    | "F7"
+    | "F8"
+    | "F9"
+    | "F0"
+    | "F11"
+    | "F12"
+    // Basic Modifier Keys.
+    | "SHIFT"
+    | "ALT"
+    | "CONTROL"
+    | "CTRL"
+    | "COMMAND"
+    | "WINDOWS"
+    | "GUI"
+    // Advanced Modifier Keys.
+    | "OPTION"
+    // Standalone Modifier Keys.
+    | "INJECT_MOD"
+    // Lock Keys.
+    | "CAPSLOCK"
+    | "NUMLOCK"
+    | "SCROLLOCK"
+  // Delays.
+  | "DELAY"
+  // Button.
+  | "WAIT_FOR_BUTTON_PRESS"
+  | "BUTTON_DEF"
+  | "DISABLE_BUTTON"
+  | "ENABLE_BUTTON"
+  // LED.
+  | "LED_OFF"
+  | "LED_R"
+  | "LED_G"
+  // Attack Mode.
+  | "ATTACKMODE"
+  | "SAVE_ATTACKMODE"
+  | "RESTORE_ATTACKMODE"
+  // Constants.
+  | "DEFINE"
+  // Variables.
+  | "VAR"
+  // Randomization.
+  | "RANDOM_LOWERCASE_LETTER"    // abcdefghijklmnopqrstuvwxyz
+  | "RANDOM_UPPERCASE_LETTER"    // ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  | "RANDOM_LETTER"              // abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
+  | "RANDOM_NUMBER"              // 0123456789
+  | "RANDOM_SPECIAL"             // !@#$%^&*()
+  | "RANDOM_CHAR"                // abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()
+  // ATTACKMODE.
+  | "VID_RANDOM"                 // Random Vendor ID
+  | "PID_RANDOM"                 // Random Product ID
+  | "MAN_RANDOM"                 //  Random 32 alphanumeric character iManufacturer
+  | "PROD_RANDOM"                // Random 32 alphanumeric character iProduct
+  | "SERIAL_RANDOM"              // Random 12 digit serial number
+  // Holding Keys.
+  | "HOLD"
+  | "RELEASE"
+  // Payload Control.
+  | "RESTART_PAYLOAD"
+  | "STOP_PAYLOAD"
+  | "RESET"
+  // Payload Hiding.
+  | "HIDE_PAYLOAD"               // Hides the inject.bin and seed.bin files from the MicroSD card.
+  | "RESTORE_PAYLOAD"            // Restores the inject.bin and seed.bin files to the MicroSD card.
+  // Lock Keys.
+  | "WAIT_FOR_CAPS_ON"           // Pause until caps lock is turned on
+  | "WAIT_FOR_CAPS_OFF"          // Pause until caps lock is turned off
+  | "WAIT_FOR_CAPS_CHANGE"       // Pause until caps lock is toggled on or off
+  | "WAIT_FOR_NUM_ON"            // Pause until num lock is turned on
+  | "WAIT_FOR_NUM_OFF"           // Pause until num lock is turned off
+  | "WAIT_FOR_NUM_CHANGE"        // Pause until num lock is toggled on or off
+  | "WAIT_FOR_SCROLL_ON"         // Pause until scroll lock is turned on
+  | "WAIT_FOR_SCROLL_OFF"        // Pause until scroll lock is turned off
+  | "WAIT_FOR_SCROLL_CHANGE"     // Pause until scroll lock is toggled on or off
+  // 'SAVE' & 'RESTORE' Commands.
+  | "SAVE_HOST_KEYBOARD_LOCK_STATE"
+  | "RESTORE_HOST_KEYBOARD_LOCK_STATE"
+  // Exfiltration.
+  | "EXFIL"
+  // MallardScript.
+  | "IMPORT"
+}
+
+value_command = {
+  (!NEWLINE ~ ANY)*
+}
+
+
+statement_variable = {
+    "$"
+  ~ keyword_variable
+  ~ " "*
+  ~ "="
+  ~ " "*
+  ~ value_variable
+  ~ " "*
+  ~ NEWLINE*
+}
+
+keyword_variable = {
+  !ASCII_DIGIT ~ (!" " ~ !"=" ~ ANY)+
+}
+
+value_variable = {
+  (!NEWLINE ~ ANY)*
+}
+
