@@ -115,6 +115,8 @@ statement_command = {
 keyword_command = {
   // Comments.
     "REM"
+  // Delays.
+  | "DELAY"
   // Keystroke Injection.
   | "STRING"
   | "STRINGLN"
@@ -173,8 +175,6 @@ keyword_command = {
     | "CAPSLOCK"
     | "NUMLOCK"
     | "SCROLLOCK"
-  // Delays.
-  | "DELAY"
   // Button.
   | "WAIT_FOR_BUTTON_PRESS"
   | "BUTTON_DEF"
