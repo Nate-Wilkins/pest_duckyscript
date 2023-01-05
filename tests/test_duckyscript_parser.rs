@@ -74,6 +74,17 @@ r#""#, vec![
                 Statement::End(StatementEnd {}),
             ]
         ),
+        // DEFAULTCHARDELAYFUZZ
+        test_parser_input_valid_command_defaultchardelayfuzz: (
+            r#"DEFAULTCHARDELAYFUZZ 180"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("DEFAULTCHARDELAYFUZZ"),
+                    value: String::from("180"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
         // DEFAULTCHARDELAY
         test_parser_input_valid_command_defaultchardelay: (
             r#"DEFAULTCHARDELAY 80"#,
@@ -1187,6 +1198,18 @@ r#""#, vec![
                 Statement::Command(StatementCommand {
                     name: String::from("EXFIL"),
                     value: String::from(""),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+    // Control Flow.
+        // REPEAT
+        test_parser_input_valid_command_repeat: (
+            r#"REPEAT 10"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("REPEAT"),
+                    value: String::from("10"),
                 }),
                 Statement::End(StatementEnd {}),
             ]
