@@ -74,6 +74,39 @@ r#""#, vec![
                 Statement::End(StatementEnd {}),
             ]
         ),
+        // DEFAULTCHARDELAY
+        test_parser_input_valid_command_defaultchardelay: (
+            r#"DEFAULTCHARDELAY 80"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("DEFAULTCHARDELAY"),
+                    value: String::from("80"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        // DEFAULTDELAYFUZZ
+        test_parser_input_valid_command_defaultdelayfuzz: (
+            r#"DEFAULTDELAYFUZZ 100"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("DEFAULTDELAYFUZZ"),
+                    value: String::from("100"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        // DEFAULTDELAY
+        test_parser_input_valid_command_defaultdelay: (
+            r#"DEFAULTDELAY 500"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("DEFAULTDELAY"),
+                    value: String::from("500"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
     // Keystroke Injection.
         // STRINGLN
         test_parser_input_valid_command_stringln: (
@@ -93,6 +126,16 @@ r#""#, vec![
                 Statement::Command(StatementCommand {
                     name: String::from("STRING"),
                     value: String::from("Hello, Friend"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_command_string_url: (
+            r#"STRING https://www.youtube.com/watch?v=dQw4w9WgXcQ"#,
+            vec![
+                Statement::Command(StatementCommand {
+                    name: String::from("STRING"),
+                    value: String::from("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
                 }),
                 Statement::End(StatementEnd {}),
             ]
@@ -551,6 +594,26 @@ r#""#, vec![
                     Statement::End(StatementEnd {}),
                 ]
             ),
+            test_parser_input_valid_command_control_shift_esc: (
+                r#"CONTROL SHIFT ESC"#,
+                vec![
+                    Statement::Command(StatementCommand {
+                        name: String::from("CONTROL"),
+                        value: String::from("SHIFT ESC"),
+                    }),
+                    Statement::End(StatementEnd {}),
+                ]
+            ),
+            test_parser_input_valid_command_control_s: (
+                r#"CONTROL s"#,
+                vec![
+                    Statement::Command(StatementCommand {
+                        name: String::from("CONTROL"),
+                        value: String::from("s"),
+                    }),
+                    Statement::End(StatementEnd {}),
+                ]
+            ),
             // CTRL
             test_parser_input_valid_command_ctrl: (
                 r#"CTRL"#,
@@ -586,11 +649,11 @@ r#""#, vec![
             ),
             // WINDOWS
             test_parser_input_valid_command_windows: (
-                r#"WINDOWS"#,
+                r#"WINDOWS r"#,
                 vec![
                     Statement::Command(StatementCommand {
                         name: String::from("WINDOWS"),
-                        value: String::from(""),
+                        value: String::from("r"),
                     }),
                     Statement::End(StatementEnd {}),
                 ]
