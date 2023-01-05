@@ -14,6 +14,23 @@
 cargo install pest_duckyscript
 ```
 
+## What does it do?
+
+This package contains [Parsing Expression Grammar (PEG)](https://en.wikipedia.org/wiki/Parsing_expression_grammar) files
+for both DuckyScript and MallardScript.
+
+### DuckyScript
+
+See the [Official Documentation](https://docs.hak5.org/hak5-usb-rubber-ducky/duckyscript-tm-quick-reference) for what
+DuckyScript looks like or look at the grammar files in this repository.
+
+### MallardScript
+
+Currently a subset of DuckyScript designed to add the following commands:
+
+- `IMPORT relative_path_to.mallardscript`: Which will be inlined when built with
+  [mallardscript](https://github.com/Nate-Wilkins/mallardscript).
+
 ## Development
 
 Written in rust. You can build and install with the following:
@@ -24,5 +41,4 @@ cargo build
 
 ## TODO:
 
-- Badges
-- Tests
+- Finish the DuckyScript grammar to support **everything** that DuckyScript can support.
