@@ -39,6 +39,6 @@ Written in rust. You can build and install with the following:
 cargo build
 ```
 
-## TODO:
+## Roadmap:
 
 - Finish the DuckyScript grammar to support **everything** that DuckyScript can support.
