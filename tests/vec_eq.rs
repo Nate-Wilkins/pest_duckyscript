@@ -8,5 +8,5 @@ pub fn vec_eq<T: PartialEq>(a: Vec<T>, b: Vec<T>) -> bool {
             return false;
         }
     }
-    return true;
+    true
 }

@@ -6,16 +6,7 @@
 //
 // // // // // // // // //
 
-// TODO: Operators, comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
-
-// Operators.
-// '='  : Assignment
-// '+'  : Add
-// '-'  : Subtract
-// '*'  : Multiply
-// '/'  : Divide
-// '%'  : Modulus
-// '^'  : Exponent
+// TODO: comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
 
 // Comparisons.
 // '==' : Equal to
@@ -38,10 +29,8 @@
 // Conditional Statements.
 // 'IF'
 // 'ELSE'
-
 // Loops.
 // 'WHILE'
-
 // Functions.
 // 'FUNCTION'
 // 'RETURN'
@@ -50,11 +39,9 @@
 // '$_RANDOM_MIN'            : minimum random integer.
 // '$_RANDOM_MAX'            : maximum random integer.
 // '$_RANDOM_INT'            : random integer between '$_RANDOM_MIN' and '$_RANDOM_MAX'.
-
 // Jitter.
 // '$_JITTER_ENABLED'        : Set TRUE to start and FALSE to stop jitter.
 // '$_JITTER_MAX'            : Integer (0-65535) of maximum time in milliseconds between keystrokes. Default 20.
-
 // Variables Internal
 // BUTTON
 // '$_BUTTON_ENABLED'        : Returns TRUE if the button is enabled or FALSE if the button is disabled.

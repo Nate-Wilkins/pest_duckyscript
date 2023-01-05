@@ -1,7 +1,8 @@
 #[derive(Debug, PartialEq)]
 pub enum Statement {
     Command(StatementCommand),
-    Variable(StatementVariable),
+    VariableAssignment(StatementVariableAssignment),
+    VariableDeclaration(StatementVariableDeclaration),
     End(StatementEnd),
 }
 
@@ -12,7 +13,13 @@ pub struct StatementCommand {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct StatementVariable {
+pub struct StatementVariableAssignment {
+    pub name: String,
+    pub assignment: String,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct StatementVariableDeclaration {
     pub name: String,
     pub assignment: String,
 }

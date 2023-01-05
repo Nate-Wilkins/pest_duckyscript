@@ -3,7 +3,10 @@ extern crate predicates;
 extern crate pretty_assertions;
 
 use pest_duckyscript::mallardscript::{
-    ast::{Statement, StatementCommand, StatementEnd, StatementVariable},
+    ast::{
+        Statement, StatementCommand, StatementEnd, StatementVariableAssignment,
+        StatementVariableDeclaration,
+    },
     parser::parse_document,
 };
 use pretty_assertions::assert_eq;
@@ -820,11 +823,22 @@ r#""#, vec![
             ]
         ),
     // Variables.
-        // VAR
-        test_parser_input_valid_command_var: (
+        // VAR - Declaration.
+        test_parser_input_valid_command_var_declaration: (
             r#"VAR $BLINK = TRUE"#,
             vec![
-                Statement::Variable(StatementVariable {
+                Statement::VariableDeclaration(StatementVariableDeclaration {
+                    name: String::from("BLINK"),
+                    assignment: String::from("TRUE"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        // VAR - Assignment.
+        test_parser_input_valid_command_var_assignment: (
+            r#"$BLINK = TRUE"#,
+            vec![
+                Statement::VariableAssignment(StatementVariableAssignment {
                     name: String::from("BLINK"),
                     assignment: String::from("TRUE"),
                 }),
@@ -1251,6 +1265,6 @@ Caused by:
     3 | VAR $1MY_VAR = 1000
       |      ^---
       |
-      = expected keyword_variable"
+      = expected keyword_name_variable"
     ),
 }
