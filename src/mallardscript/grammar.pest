@@ -6,16 +6,7 @@
 //
 // // // // // // // // //
 
-// TODO: Operators, comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
-
-// Operators.
-// '='  : Assignment
-// '+'  : Add
-// '-'  : Subtract
-// '*'  : Multiply
-// '/'  : Divide
-// '%'  : Modulus
-// '^'  : Exponent
+// TODO: comparisons, logical operators, bitwise operators, conditional statements, loops, functions.
 
 // Comparisons.
 // '==' : Equal to
@@ -100,8 +91,19 @@
 
 document = {
     SOI
-  ~ " "* ~ NEWLINE* ~ (statement_command | statement_variable)*
+  ~ " "* ~ NEWLINE* ~ (statement_variable_assignment | statement_command | statement_variable_declaration)*
   ~ EOI
+}
+
+statement_variable_assignment = {
+    "$"
+  ~ keyword_name_variable
+  ~ " "*
+  ~ "="
+  ~ " "*
+  ~ value_variable
+  ~ " "*
+  ~ NEWLINE*
 }
 
 statement_command = {
@@ -242,11 +244,11 @@ value_command = {
 }
 
 
-statement_variable = {
+statement_variable_declaration = {
     "VAR"
   ~ " "*
   ~ "$"
-  ~ keyword_variable
+  ~ keyword_name_variable
   ~ " "*
   ~ "="
   ~ " "*
@@ -255,7 +257,7 @@ statement_variable = {
   ~ NEWLINE*
 }
 
-keyword_variable = {
+keyword_name_variable = {
   !ASCII_DIGIT ~ (!" " ~ !"=" ~ ANY)+
 }
 

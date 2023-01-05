@@ -1160,11 +1160,11 @@ r#""#, vec![
     // Exfiltration.
         // EXFIL
         test_parser_input_valid_command_exfil: (
-            r#"EXFIL"#,
+            r#"EXFIL $FOO"#,
             vec![
                 Statement::Command(StatementCommand {
                     name: String::from("EXFIL"),
-                    value: String::from(""),
+                    value: String::from("$FOO"),
                 }),
                 Statement::End(StatementEnd {}),
             ]
