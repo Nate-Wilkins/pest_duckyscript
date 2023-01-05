@@ -74,39 +74,6 @@ r#""#, vec![
                 Statement::End(StatementEnd {}),
             ]
         ),
-        // DEFAULTCHARDELAYFUZZ
-        test_parser_input_valid_command_defaultchardelayfuzz: (
-            r#"DEFAULTCHARDELAYFUZZ 180"#,
-            vec![
-                Statement::Command(StatementCommand {
-                    name: String::from("DEFAULTCHARDELAYFUZZ"),
-                    value: String::from("180"),
-                }),
-                Statement::End(StatementEnd {}),
-            ]
-        ),
-        // DEFAULTCHARDELAY
-        test_parser_input_valid_command_defaultchardelay: (
-            r#"DEFAULTCHARDELAY 80"#,
-            vec![
-                Statement::Command(StatementCommand {
-                    name: String::from("DEFAULTCHARDELAY"),
-                    value: String::from("80"),
-                }),
-                Statement::End(StatementEnd {}),
-            ]
-        ),
-        // DEFAULTDELAYFUZZ
-        test_parser_input_valid_command_defaultdelayfuzz: (
-            r#"DEFAULTDELAYFUZZ 100"#,
-            vec![
-                Statement::Command(StatementCommand {
-                    name: String::from("DEFAULTDELAYFUZZ"),
-                    value: String::from("100"),
-                }),
-                Statement::End(StatementEnd {}),
-            ]
-        ),
         // DEFAULTDELAY
         test_parser_input_valid_command_defaultdelay: (
             r#"DEFAULTDELAY 500"#,

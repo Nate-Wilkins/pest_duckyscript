@@ -116,9 +116,6 @@ keyword_command = {
   // Comments.
     "REM"
   // Delays.
-  | "DEFAULTCHARDELAYFUZZ"
-  | "DEFAULTDELAYFUZZ"
-  | "DEFAULTCHARDELAY"
   | "DEFAULTDELAY"
   | "DELAY"
   // Keystroke Injection.
