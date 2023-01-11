@@ -66,7 +66,6 @@ pub fn parse_statement_command_stringln(pair: Pair<grammar::Rule>) -> Result<ast
 
 /// Parse a PEG pair STRING statement.
 pub fn parse_statement_command_string(pair: Pair<grammar::Rule>) -> Result<ast::Statement> {
-    println!("{:#?}", pair);
     let mut inner_pairs = pair.into_inner();
     let keyword_command_value: Pair<grammar::Rule> = inner_pairs.next().unwrap();
     Ok(ast::Statement::CommandString(ast::StatementCommandString {
