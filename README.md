@@ -41,4 +41,4 @@ cargo build
 
 ## Roadmap:
 
-- Finish the DuckyScript grammar to support **everything** that DuckyScript can support.
+- Support for DuckyPad syntax.

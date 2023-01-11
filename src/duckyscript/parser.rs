@@ -117,21 +117,21 @@ pub fn parse_statement_command_key(pair: Pair<grammar::Rule>) -> Result<ast::Sta
         }
     }
 
-    return Ok(ast::Statement::CommandKey(ast::StatementCommandKey {
+    Ok(ast::Statement::CommandKey(ast::StatementCommandKey {
         statements: keyword_command_key_statements,
         remaining_keys: String::from(keyword_command_key_remaining_keys),
-    }));
+    }))
 }
 
 /// Parse a PEG pair command key value statement.
 pub fn parse_statement_command_key_value(pair: Pair<grammar::Rule>) -> Result<ast::Statement> {
     let keyword_command_key_name = String::from(pair.as_str());
 
-    return Ok(ast::Statement::CommandKeyValue(
+    Ok(ast::Statement::CommandKeyValue(
         ast::StatementCommandKeyValue {
             name: keyword_command_key_name,
         },
-    ));
+    ))
 }
 
 /// Parse a PEG pair single command statement.
@@ -169,6 +169,62 @@ pub fn parse_statement_command_variable_declaration(
             assignment: String::from(value_variable.as_str()),
         },
     ));
+}
+
+/// Parse a PEG pair block if statement and it's statements.
+pub fn parse_statement_block_if(pair: Pair<grammar::Rule>) -> Result<ast::Statement> {
+    let mut inner_pairs = pair.into_inner();
+    let expression: Pair<grammar::Rule> = inner_pairs.next().unwrap();
+
+    // Do we have statements in the true case?
+    let mut statement_block_if_case_true_statements: Vec<ast::Statement> = vec![];
+    let statement_block_if_case_true: Pair<grammar::Rule> = inner_pairs.next().unwrap();
+    let statement_block_if_case_true_inner_pairs = statement_block_if_case_true.into_inner();
+    for statement_block_if_case_true_statement in statement_block_if_case_true_inner_pairs {
+        let statement = parse_statement(statement_block_if_case_true_statement)
+            .with_context(|| "Unable to parse if case true statement.")
+            .unwrap();
+        statement_block_if_case_true_statements.push(statement);
+    }
+    // Do we have statements in the false case?
+    let mut statement_block_if_case_false_statements: Vec<ast::Statement> = vec![];
+    if let Some(statement_block_if_case_false) = inner_pairs.next() {
+        let statement_block_if_case_false_inner_pairs = statement_block_if_case_false.into_inner();
+        for statement_block_if_case_false_statement in statement_block_if_case_false_inner_pairs {
+            let statement = parse_statement(statement_block_if_case_false_statement)
+                .with_context(|| "Unable to parse if case false statement.")
+                .unwrap();
+            statement_block_if_case_false_statements.push(statement);
+        }
+    }
+
+    Ok(ast::Statement::BlockIf(ast::StatementBlockIf {
+        expression: String::from(expression.as_str()),
+        statements_true: statement_block_if_case_true_statements,
+        statements_false: statement_block_if_case_false_statements,
+    }))
+}
+
+/// Parse a PEG pair block while statement and it's statements.
+pub fn parse_statement_block_while(pair: Pair<grammar::Rule>) -> Result<ast::Statement> {
+    let mut inner_pairs = pair.into_inner();
+    let expression: Pair<grammar::Rule> = inner_pairs.next().unwrap();
+
+    // Do we have inner statements?
+    let mut control_block_list_statement_statements: Vec<ast::Statement> = vec![];
+    let control_block_list_statement: Pair<grammar::Rule> = inner_pairs.next().unwrap();
+    let control_block_list_statement_inner_pairs = control_block_list_statement.into_inner();
+    for control_block_list_statement_statement in control_block_list_statement_inner_pairs {
+        let statement = parse_statement(control_block_list_statement_statement)
+            .with_context(|| "Unable to parse while statement.")
+            .unwrap();
+        control_block_list_statement_statements.push(statement);
+    }
+
+    Ok(ast::Statement::BlockWhile(ast::StatementBlockWhile {
+        expression: String::from(expression.as_str()),
+        statements: control_block_list_statement_statements,
+    }))
 }
 
 /// Parse a PEG pair statement into it's AST equivalent.
@@ -279,10 +335,42 @@ pub fn parse_statement(pair: Pair<grammar::Rule>) -> Result<ast::Statement> {
         | grammar::Rule::statement_command_restore_host_keyboard_lock_state => {
             parse_statement_single_command(pair)
         }
-        grammar::Rule::EOI => {
-            return Ok(ast::Statement::End(ast::StatementEnd {}));
-        }
-        _ => Err(anyhow!(
+        grammar::Rule::statement_block_if => parse_statement_block_if(pair),
+        grammar::Rule::statement_block_while => parse_statement_block_while(pair),
+        grammar::Rule::EOI => Ok(ast::Statement::End(ast::StatementEnd {})),
+
+        // NOTE: All these rules are part of the grammar but *not* valid statements.
+        //       These are included so we can get build time checking for *all* valid statements.
+        grammar::Rule::list_statement
+        | grammar::Rule::document
+        | grammar::Rule::statement_command
+        | grammar::Rule::statement
+        | grammar::Rule::variable
+        | grammar::Rule::keyword_name
+        | grammar::Rule::statement_block_if_case_true
+        | grammar::Rule::statement_block_if_case_false
+        | grammar::Rule::statement_block_while_statements
+        | grammar::Rule::control_block_list_statement
+        | grammar::Rule::expression
+        | grammar::Rule::expression_negation
+        | grammar::Rule::value
+        | grammar::Rule::value_number
+        | grammar::Rule::value_boolean
+        | grammar::Rule::value_string
+        | grammar::Rule::value_string_value
+        | grammar::Rule::value_string_hex
+        | grammar::Rule::value_string_unicode_hex
+        | grammar::Rule::value_string_escape_predefined
+        | grammar::Rule::value_string_byte
+        | grammar::Rule::value_string_unicode
+        | grammar::Rule::value_string_escape
+        | grammar::Rule::value_any
+        | grammar::Rule::operator
+        | grammar::Rule::operator_comparator
+        | grammar::Rule::operator_logical
+        | grammar::Rule::not_special
+        | grammar::Rule::indentation
+        | grammar::Rule::whitespace => Err(anyhow!(
             "Provided pair was not a valid statement.\n{:#?}",
             pair
         )),

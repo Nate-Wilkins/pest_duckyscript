@@ -575,19 +575,7 @@ statement_block_if = {
   )?
   ~ (
       PEEK_ALL
-    ~ "END_FI"
-  )
-}
-
-statement_block_while = {
-    "WHILE"
-  ~ whitespace+
-  ~ expression
-  ~ NEWLINE
-  ~ control_block_list_statement*
-  ~ (
-      PEEK_ALL
-    ~ "END_WHILE"
+    ~ "END_IF"
   )
 }
 
@@ -596,6 +584,22 @@ statement_block_if_case_true = {
 }
 
 statement_block_if_case_false = {
+  control_block_list_statement*
+}
+
+statement_block_while = {
+    "WHILE"
+  ~ whitespace+
+  ~ expression
+  ~ NEWLINE
+  ~ statement_block_while_statements
+  ~ (
+      PEEK_ALL
+    ~ "END_WHILE"
+  )
+}
+
+statement_block_while_statements = {
   control_block_list_statement*
 }
 
