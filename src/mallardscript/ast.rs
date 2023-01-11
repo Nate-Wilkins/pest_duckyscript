@@ -1,5 +1,7 @@
 #[derive(Debug, PartialEq)]
 pub enum Statement {
+    BlockIf(StatementBlockIf),
+    BlockWhile(StatementBlockWhile),
     CommandDefaultDelay(StatementCommandDefaultDelay),
     CommandDefine(StatementCommandDefine),
     CommandDelay(StatementCommandDelay),
@@ -14,6 +16,19 @@ pub enum Statement {
     SingleCommand(StatementSingleCommand),
     VariableAssignment(StatementVariableAssignment),
     VariableDeclaration(StatementVariableDeclaration),
+}
+
+#[derive(Debug, PartialEq)]
+pub struct StatementBlockIf {
+    pub expression: String,
+    pub statements_true: Vec<Statement>,
+    pub statements_false: Vec<Statement>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct StatementBlockWhile {
+    pub expression: String,
+    pub statements: Vec<Statement>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -79,7 +94,6 @@ pub struct StatementVariableDeclaration {
     pub name: String,
     pub assignment: String,
 }
-
 #[derive(Debug, PartialEq)]
 pub struct StatementCommandImport {
     pub value: String,

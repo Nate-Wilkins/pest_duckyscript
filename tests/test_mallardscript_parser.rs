@@ -4,10 +4,10 @@ extern crate pretty_assertions;
 
 use pest_duckyscript::mallardscript::{
     ast::{
-        Statement, StatementCommandDefaultDelay, StatementCommandDefine, StatementCommandDelay,
-        StatementCommandExfil, StatementCommandImport, StatementCommandKey,
-        StatementCommandKeyValue, StatementCommandRem, StatementCommandString,
-        StatementCommandStringln, StatementEnd, StatementSingleCommand,
+        Statement, StatementBlockIf, StatementBlockWhile, StatementCommandDefaultDelay,
+        StatementCommandDefine, StatementCommandDelay, StatementCommandExfil,
+        StatementCommandImport, StatementCommandKey, StatementCommandKeyValue, StatementCommandRem,
+        StatementCommandString, StatementCommandStringln, StatementEnd, StatementSingleCommand,
         StatementVariableAssignment, StatementVariableDeclaration,
     },
     parser::parse_document,
@@ -1385,6 +1385,172 @@ r#""#, vec![
             vec![
                 Statement::CommandExfil(StatementCommandExfil {
                     name: String::from("FOO"),
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+    // Control Flow
+        // IF
+        test_parser_input_valid_if: (
+            r#"IF TRUE THEN
+  STRING Hello, Friend
+END_IF"#,
+            vec![
+                Statement::BlockIf(StatementBlockIf {
+                    expression: String::from("TRUE"),
+                    statements_true: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Friend"),
+                        })
+                    ],
+                    statements_false: vec![],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_if_with_operator_equals: (
+            r#"IF $MY_VALUE > 0 THEN
+  STRING Hello, Friend
+END_IF"#,
+            vec![
+                Statement::BlockIf(StatementBlockIf {
+                    expression: String::from("$MY_VALUE > 0"),
+                    statements_true: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Friend"),
+                        })
+                    ],
+                    statements_false: vec![],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_if_and_else: (
+            r#"IF TRUE THEN
+  STRING Hello, Friend
+ELSE
+  STRING Hello, Dog?
+END_IF"#,
+            vec![
+                Statement::BlockIf(StatementBlockIf {
+                    expression: String::from("TRUE"),
+                    statements_true: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Friend"),
+                        })
+                    ],
+                    statements_false: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Dog?"),
+                        })
+                    ],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_if_and_else_nested_if_and_else: (
+            r#"IF TRUE THEN
+  IF $MY_CONDITION_ONE THEN
+    STRING Hello, Friend One
+  ELSE
+    STRING Hello, Friend Two
+  END_IF
+ELSE
+  IF $MY_CONDITION_TWO THEN
+    STRING Hello, Dog One?
+  ELSE
+    STRING Hello, Dog Two?
+  END_IF
+END_IF"#,
+            vec![
+                Statement::BlockIf(StatementBlockIf {
+                    expression: String::from("TRUE"),
+                    statements_true: vec![
+                        Statement::BlockIf(StatementBlockIf {
+                            expression: String::from("$MY_CONDITION_ONE"),
+                            statements_true: vec![
+                                Statement::CommandString(StatementCommandString {
+                                    value: String::from("Hello, Friend One"),
+                                })
+                            ],
+                            statements_false: vec![
+                                Statement::CommandString(StatementCommandString {
+                                    value: String::from("Hello, Friend Two"),
+                                })
+                            ]
+                        })
+                    ],
+                    statements_false: vec![
+                        Statement::BlockIf(StatementBlockIf {
+                            expression: String::from("$MY_CONDITION_TWO"),
+                            statements_true: vec![
+                                Statement::CommandString(StatementCommandString {
+                                    value: String::from("Hello, Dog One?"),
+                                })
+                            ],
+                            statements_false: vec![
+                                Statement::CommandString(StatementCommandString {
+                                    value: String::from("Hello, Dog Two?"),
+                                })
+                            ]
+                        })
+                    ],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        // WHILE
+        test_parser_input_valid_while: (
+            r#"WHILE TRUE
+  STRING Hello, Friend
+END_WHILE"#,
+            vec![
+                Statement::BlockWhile(StatementBlockWhile {
+                    expression: String::from("TRUE"),
+                    statements: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Friend"),
+                        })
+                    ],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_while_with_operator_equals: (
+            r#"WHILE $MY_VALUE > 0
+  STRING Hello, Friend
+END_WHILE"#,
+            vec![
+                Statement::BlockWhile(StatementBlockWhile {
+                    expression: String::from("$MY_VALUE > 0"),
+                    statements: vec![
+                        Statement::CommandString(StatementCommandString {
+                            value: String::from("Hello, Friend"),
+                        })
+                    ],
+                }),
+                Statement::End(StatementEnd {}),
+            ]
+        ),
+        test_parser_input_valid_while_nested: (
+            r#"WHILE TRUE
+  WHILE $MY_CONDITION_ONE < 10
+    STRING Hello, Friend
+  END_WHILE
+END_WHILE"#,
+            vec![
+                Statement::BlockWhile(StatementBlockWhile {
+                    expression: String::from("TRUE"),
+                    statements: vec![
+                        Statement::BlockWhile(StatementBlockWhile {
+                            expression: String::from("$MY_CONDITION_ONE < 10"),
+                            statements: vec![
+                                Statement::CommandString(StatementCommandString {
+                                    value: String::from("Hello, Friend"),
+                                })
+                            ],
+                        })
+                    ],
                 }),
                 Statement::End(StatementEnd {}),
             ]
