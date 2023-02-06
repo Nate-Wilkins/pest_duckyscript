@@ -4,6 +4,7 @@
 [![Build](https://img.shields.io/travis/Nate-Wilkins/pest_duckyscript/main?style=flat-square)](https://app.travis-ci.com/github/Nate-Wilkins/pest_duckyscript)
 [![Downloads](https://img.shields.io/crates/d/pest_duckyscript?color=%230E0&style=flat-square)](https://crates.io/crates/pest_duckyscript)
 [![Open Issues](https://img.shields.io/github/issues-raw/Nate-Wilkins/pest_duckyscript?style=flat-square)](https://github.com/Nate-Wilkins/pest_duckyscript/issues)
+[![Test Coverage](https://img.shields.io/badge/test%20coverage-96%25-green?style=flat-square)](https://travis-ci.com/Nate-Wilkins/pest_duckyscript)
 [![License](https://img.shields.io/github/license/Nate-Wilkins/pest_duckyscript?color=%2308F&style=flat-square)](https://github.com/Nate-Wilkins/pest_duckyscript/blob/main/LICENSE)
 
 > Hak5 DuckyScript and MallardScript language grammers - used for parsing/compilation.
